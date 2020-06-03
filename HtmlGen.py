@@ -83,6 +83,22 @@ def ServerNameInfoHtml(client):
 
 def BaseProgrammInstalledHtml(client):
     programInfo = ServerInfo.ServerInfo.getBaseProgramEnv(client)
-    table = [['Установленное ПО '], [programInfo]]
-    return getHTMLTable(table)
+    listHtml = []
+
+    listHtml.append('<table>')
+    listHtml.append('<tbody>')
+    x = 1
+    while x < len(programInfo):
+        listHtml.append('<tr>')
+        listHtml.append('<td>' + programInfo[x] + '</td>' + '\n')
+        listHtml.append('</tr>')
+        if x == len(programInfo) - 2:
+            break
+        x = x + 1
+    listHtml.append('</tbody>')
+    listHtml.append('</table>')
+    return listHtml
+
+    # table = [['Установленное ПО'], [programInfo]]
+    #return getHTMLTable(table)
 

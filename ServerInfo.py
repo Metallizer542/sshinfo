@@ -11,12 +11,12 @@ class ServerInfo():
         client.connect(host, port, user, password)
         return client
 
-    def getInfo(client, command):
+    def ExecCommandOnRemoteServer(client, command):
         stdin, stdout, stderr = client.exec_command(command)
         return stdout.readlines()
 
     def getCpuFreqInfo(client):
-        data = set(ServerInfo.getInfo(client, 'cat /proc/cpuinfo |grep MHz'))
+        data = set(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /proc/cpuinfo |grep MHz'))
         cpuTempList = []
         for x in data:
             cpuTempList.append(x)
@@ -26,7 +26,7 @@ class ServerInfo():
         return str(freq)
 
     def getCpuCoresInfo(client):
-        data = set(ServerInfo.getInfo(client, 'cat /proc/cpuinfo |grep cores'))
+        data = set(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /proc/cpuinfo |grep cores'))
         CpuTempCoresList = []
         for x in data:
             CpuTempCoresList.append(x)
@@ -35,19 +35,19 @@ class ServerInfo():
         return str(CpuCores)
 
     def getMemInfo(client):
-        memTotalTemp = str(ServerInfo.getInfo(client, 'cat /proc/meminfo |grep MemTotal'))
+        memTotalTemp = str(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /proc/meminfo |grep MemTotal'))
         tempData = filter(str.isdigit, memTotalTemp)
         memTotal = int("".join(tempData))
         mem = round(memTotal/1000000, 1)
         return str(mem)
 
     def getOsCoreInfo(client):
-        RawLinuxCoreVersion = str(ServerInfo.getInfo(client, 'awk \'{print $1,$2,$3}\' /proc/version'))
+        RawLinuxCoreVersion = str(ServerInfo.ExecCommandOnRemoteServer(client, 'awk \'{print $1,$2,$3}\' /proc/version'))
         LinuxCoreVersion = ''.join(i for i in RawLinuxCoreVersion if not i in ServerInfo.bad_chars)
         return str(LinuxCoreVersion)
 
     def getOsInfo(client):
-        RawOSVersion = str(ServerInfo.getInfo(client, 'cat /etc/centos-release |tr -s ''\r\n'' ' ''))
+        RawOSVersion = str(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release |tr -s ''\r\n'' ' ''))
         OsVersion = ''.join(i for i in RawOSVersion if not i in ServerInfo.bad_chars)
         return str(OsVersion)
 
@@ -63,55 +63,60 @@ class ServerInfo():
            remote_file.close()
 
     def dfDiskSizeInfo(client):
-        RawFdiskInfoSize = ServerInfo.getInfo(client, 'df -h --output=size')
+        RawFdiskInfoSize = ServerInfo.ExecCommandOnRemoteServer(client, 'df -h --output=size')
         dfdiskInfoSize = ''.join(i for i in RawFdiskInfoSize if not i in ServerInfo.bad_chars)
         list = dfdiskInfoSize.split("\n")
         return list
 
     def dfDiskSourceInfo(client):
-        RawFdiskInfoSource = (ServerInfo.getInfo(client, 'df -h --output=source'))
+        RawFdiskInfoSource = (ServerInfo.ExecCommandOnRemoteServer(client, 'df -h --output=source'))
         dfdiskInfoSource = ''.join(i for i in RawFdiskInfoSource if not i in ServerInfo.bad_chars)
         list = dfdiskInfoSource.split("\n")
         return list
 
     def getServerName(client):
-        RawServerName = ServerInfo.getInfo(client, 'cat /proc/sys/kernel/hostname')
+        RawServerName = ServerInfo.ExecCommandOnRemoteServer(client, 'cat /proc/sys/kernel/hostname')
         serverName = ''.join(i for i in RawServerName if not i in ServerInfo.bad_chars)
         return serverName
 
     def getIpAddress(client):
-        ServerInfo.getInfo(client, 'touch /home/intertrust/ip.txt')
-        ServerInfo.getInfo(client, 'sudo ip -4 addr | grep "inet" | awk {\'print $2\'} | tee /home/intertrust/ip.txt')
-        RawIpInfo = (ServerInfo.getInfo(client, 'cat /home/intertrust/ip.txt'))
-        ServerInfo.getInfo(client, 'sudo rm -f /home/intertrust/ip.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/ip.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo ip -4 addr | grep "inet" | awk {\'print $2\'} | tee /home/intertrust/ip.txt')
+        RawIpInfo = (ServerInfo.ExecCommandOnRemoteServer(client, 'cat /home/intertrust/ip.txt'))
+        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f /home/intertrust/ip.txt')
         return RawIpInfo[1]
 
     def getBaseProgramEnv(client):
 
-        BaseProgramEnv = ['wildfly', 'tomcat', 'postgresql', 'logstash', 'zabbix', 'kibana', 'artemis', 'solr', 'haproxy', 'nginx','elasticsearch']
-
-        ServicesInfo = str(ServerInfo.getInfo(client, 'ls /etc/systemd/system && ls /usr/lib/systemd/system |tr -d ''\r\n'' ' ''))
-        Rawinfo=ServicesInfo.split()
-        tempInfo = []
+        BaseProgramEnv = ['wildfly', 'tomcat', 'postgresql', 'logstash', 'zabbix', 'kibana', 'artemis', 'solr', 'haproxy', 'nginx', 'elasticsearch']
+        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/java_version.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'ls /etc/systemd/system  >> /home/intertrust/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'ls /usr/lib/systemd/system >> /home/intertrust/installed_services.txt')
+        tempInfo = ServerInfo.readRemoteFile(client, '/home/intertrust/installed_services.txt')
         BaseProgramInstalledServices = []
-        for x in Rawinfo:
-            s = ''.join(i for i in x if not i in ServerInfo.bad_chars)
-            tempInfo.append(s)
 
         for x in tempInfo:
             for y in BaseProgramEnv:
                 if x.__contains__(y):
-                    BaseProgramInstalledServices.append(x)
+                    BaseProgramInstalledServices.append(str(x.replace('.service', '')))
 
-
-
-        ServerInfo.getInfo(client, 'touch /home/intertrust/java_version.txt')
-        ServerInfo.getInfo(client, 'sudo java -version 2>/home/intertrust/java_version.txt')
-        javaVersion = str(ServerInfo.getInfo(client, 'cat /home/intertrust/java_version.txt'))
-        java = javaVersion.split(',')
-        j = ''.join(i for i in java[0] if not i in ServerInfo.bad_chars)
-        BaseProgramInstalledServices.append(j)
+        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo java -version 2>/home/intertrust/java_version.txt')
+        javatmp = ServerInfo.readRemoteFile(client, '/home/intertrust/java_version.txt')
+        BaseProgramInstalledServices.append(javatmp[0])
+        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f /home/intertrust/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f /home/intertrust/java_version.txt')
 
         return BaseProgramInstalledServices
 
+    def readRemoteFile(client, filepath):
+        sftp_client = client.open_sftp()
+        remote_file = sftp_client.open(filepath)
+        file = []
+        try:
+            for line in remote_file:
+                file.append(line.replace('\n', ' '))
+            return file
+        finally:
+            remote_file.close()
 

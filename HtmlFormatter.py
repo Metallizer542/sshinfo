@@ -30,6 +30,7 @@ def generateHtmlTableHeader():
 
 
 def generateHTMLTableBody(file, client):
+    baseProgram = HtmlGen.BaseProgrammInstalledHtml(client)
     file.write('<tbody>')
     file.write('<tr>')
     file.write('<td>' + HtmlGen.ServerNameInfoHtml(client) + '</td>' + '\n')
@@ -38,22 +39,15 @@ def generateHTMLTableBody(file, client):
     file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.BaseProgrammInstalledHtml(client) + '</td>' + '\n')
+    for x in baseProgram:
+        file.write('<td>' + x + '</td>')
+    #HtmlGen.BaseProgrammInstalledHtml(client)
     file.write('</tr>')
     file.write('</tbody')
 
+generateHtmlTableHeader()
 
-info =ServerInfo.ServerInfo.getBaseProgramEnv(client)
 
-good_chars = (ascii_letters + whitespace).encode()
-junk_chars = bytearray(set(range(0x100)) - set(good_chars))
 
-def clean(text):
-    return text.encode('ascii', 'ignore').translate(None, junk_chars).decode()
-
-tmp = []
-
-for x in info:
-   print(x)
 
 
