@@ -1,4 +1,4 @@
-import HtmlGen
+from HtmlGen import HtmlGen
 import ServerInfo
 from string import ascii_letters, whitespace
 
