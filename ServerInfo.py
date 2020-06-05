@@ -47,7 +47,7 @@ class ServerInfo():
         return str(LinuxCoreVersion)
 
     def getOsInfo(client):
-        RawOSVersion = str(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release |tr -s ''\r\n'' ' ''))
+        RawOSVersion = str(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release'))
         OsVersion = ''.join(i for i in RawOSVersion if not i in ServerInfo.bad_chars)
         return str(OsVersion)
 
@@ -68,10 +68,10 @@ class ServerInfo():
         list = dfdiskInfoSize.split("\n")
         return list
 
-    def dfDiskSourceInfo(client):
-        RawFdiskInfoSource = (ServerInfo.ExecCommandOnRemoteServer(client, 'df -h --output=source'))
-        dfdiskInfoSource = ''.join(i for i in RawFdiskInfoSource if not i in ServerInfo.bad_chars)
-        list = dfdiskInfoSource.split("\n")
+    def dfDiskFileSystemInfo(client):
+        RawFdiskInfoFileSystem = (ServerInfo.ExecCommandOnRemoteServer(client, 'df -h --output=source'))
+        dfdiskInfoFileSystem = ''.join(i for i in RawFdiskInfoFileSystem if not i in ServerInfo.bad_chars)
+        list = dfdiskInfoFileSystem.split("\n")
         return list
 
     def getServerName(client):

@@ -22,6 +22,7 @@ def generateHtmlTableHeader():
     file.write('<th> CPU </th>')
     file.write('<th> RAM </th>')
     file.write('<th> Установленное ПО </th>')
+    file.write('<th> HDD </th>')
     file.write('</tr>')
     file.write('</thead>')
     generateHTMLTableBody(file, client)
@@ -31,17 +32,19 @@ def generateHtmlTableHeader():
 
 def generateHTMLTableBody(file, client):
     baseProgram = HtmlGen.BaseProgrammInstalledHtml(client)
+    hddInfo=HtmlGen.HDDInfoHtml(client)
     file.write('<tbody>')
     file.write('<tr>')
     file.write('<td>' + HtmlGen.ServerNameInfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.ServerAddresseInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + 'SSH: User - ' + user + '\n' + 'Password - ' + password + '</td>' + '\n')
+    file.write('<td>' + 'SSH: User - ' + user + 'Password - ' + password + '</td>' + '\n')
     file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
     for x in baseProgram:
         file.write('<td>' + x + '</td>')
-    #HtmlGen.BaseProgrammInstalledHtml(client)
+    for x in hddInfo:
+        file.write('<td>' + x + '</td>')
     file.write('</tr>')
     file.write('</tbody')
 

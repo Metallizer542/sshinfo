@@ -34,38 +34,39 @@ class HtmlGen():
         return HtmlGen.getHTMLTable(table)
 
 
-    def HDDInfoHtml(filepath, client):
-        file = open(filepath, 'w')
-        file.write('<h4> Hard Disk Info </h4>' + '\n')
+    def HDDInfoHtml(client):
+
         hddSizeInfo = ServerInfo.ServerInfo.dfDiskSizeInfo(client)
-        hddSourceInfo = ServerInfo.ServerInfo.dfDiskSourceInfo(client)
+        hddSourceInfo = ServerInfo.ServerInfo.dfDiskFileSystemInfo(client)
         list = []
+        list2 = []
         x = 0
         while x < len(hddSizeInfo):
             list.append(hddSourceInfo[x] + hddSizeInfo[x])
             x = x + 1
 
-        file.write('<table border="1">')
-        file.write('<thead>')
-        file.write('<tr>')
-        file.write('<th> Файловая система </th>')
-        file.write('<th> Размер </th>')
-        file.write('</tr>')
-        file.write('</thead>')
-        file.write('<tbody>')
+        list2.append('<table>')
+        list2.append('<tbody>')
+
+        list2.append('<tr>')
+        list2.append('<td> <b> Файловая система </b> </th>')
+        list2.append('<td> <b> Размер </b> </th>')
+
+        list2.append('</tr>')
+
+
         x = 1
         while x < len(list):
-            file.write('<tr>')
-            file.write('<td>' + hddSourceInfo[x] + '</td>' + '\n')
-            file.write('<td>' + hddSizeInfo[x] + '</td>' + '\n')
-            file.write('</tr>')
+            list2.append('<tr>')
+            list2.append('<td>' + hddSourceInfo[x] + '</td>' + '\n')
+            list2.append('<td>' + hddSizeInfo[x] + '</td>' + '\n')
+            list2.append('</tr>')
             if x == len(list) - 2:
                 break
             x = x + 1
-
-        file.write('</tbody>')
-        file.write('</table>')
-        file.close()
+        list2.append('</tbody>')
+        list2.append('</table>')
+        return list2
 
 
     def ServerAddresseInfoHtml(client):
