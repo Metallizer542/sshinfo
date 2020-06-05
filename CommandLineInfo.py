@@ -1,7 +1,8 @@
+#!/usr/local/bin/python3.8
+# -*- coding: utf-8 -*-
+
 import sys
-
 import HtmlFormatter
-
 
 def startProgram():
 

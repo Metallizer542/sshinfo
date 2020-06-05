@@ -19,7 +19,7 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
     file.write('</thead>')
     x = 0
     while(x<len(hosts)):
-        client = getSShConnection(hosts[x], user, password, ports[x])
+        client = ServerInfo.getSShConnection(hosts[x], user, password, ports[x])
         generateHTMLTableBody(file, client, hosts[x], ports[x], user, password)
         x = x + 1
     file.write('</table')
@@ -27,16 +27,16 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
 
 
 def generateHTMLTableBody(file, client, host, port, user, password):
-    baseProgram = BaseProgrammInstalledHtml(client)
-    hddInfo=HDDInfoHtml(client)
+    baseProgram = HtmlGen.BaseProgrammInstalledHtml(client)
+    hddInfo=HtmlGen.HDDInfoHtml(client)
     file.write('<tbody>')
     file.write('<tr>')
-    file.write('<td>' + ServerNameInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + ServerAddresseInfoHtml(client) + '</br>' + 'SSH из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
+    file.write('<td>' + HtmlGen.ServerNameInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlGen.ServerAddresseInfoHtml(client) + '</br>' + 'SSH из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
     file.write('<td>' + 'SSH: User - ' + user + '</br>' + ' Password - ' + password + '</td>' + '\n')
-    file.write('<td>' + OsInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + CPUinfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + MemoryInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
     for x in baseProgram:
         file.write('<td>' + x + '</td>')
     for x in hddInfo:

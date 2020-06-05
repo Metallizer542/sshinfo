@@ -1,4 +1,4 @@
-import ServerInfo
+from ServerInfo import ServerInfo
 from tabulate import tabulate
 
 
@@ -10,32 +10,32 @@ class HtmlGen():
 
     def fstabInfoHtml(client):
         sftp_client = client.open_sftp()
-        fstab = getFsTabInfo(sftp_client)
-        return getHTMLTable(fstab)
+        fstab = ServerInfo.getFsTabInfo(sftp_client)
+        return HtmlGen.getHTMLTable(fstab)
 
     def CPUinfoHtml(client):
-        freq = str(getCpuFreqInfo(client))
-        cores = str(getCpuCoresInfo(client))
+        freq = str(ServerInfo.getCpuFreqInfo(client))
+        cores = str(ServerInfo.getCpuCoresInfo(client))
         table = [['CPU frequency', 'CPU cores'], [freq + " GHZ", cores]]
-        return getHTMLTable(table)
+        return HtmlGen.getHTMLTable(table)
 
     def MemoryInfoHtml(client):
-        mem = str(getMemInfo(client))
+        mem = str(ServerInfo.getMemInfo(client))
         table = [['Memory size'], [mem + " GB", ]]
-        return getHTMLTable(table)
+        return HtmlGen.getHTMLTable(table)
 
 
     def OsInfoHtml(client):
-        osLinuxCore = getOsCoreInfo(client)
-        osVersion = getOsInfo(client)
+        osLinuxCore = ServerInfo.getOsCoreInfo(client)
+        osVersion = ServerInfo.getOsInfo(client)
         table = [['ОС', 'Версия ядра Linux'], [osVersion, osLinuxCore]]
-        return getHTMLTable(table)
+        return HtmlGen.getHTMLTable(table)
 
 
     def HDDInfoHtml(client):
 
-        hddSizeInfo = dfDiskSizeInfo(client)
-        hddSourceInfo = dfDiskFileSystemInfo(client)
+        hddSizeInfo = ServerInfo.dfDiskSizeInfo(client)
+        hddSourceInfo =ServerInfo. dfDiskFileSystemInfo(client)
         list = []
         list2 = []
         x = 0
@@ -68,18 +68,18 @@ class HtmlGen():
 
 
     def ServerAddresseInfoHtml(client):
-        ip = getIpAddress(client)
+        ip = ServerInfo.getIpAddress(client)
         table = [['Внутренний IP адрес '], [ip]]
-        return getHTMLTable(table)
+        return HtmlGen.getHTMLTable(table)
 
 
     def ServerNameInfoHtml(client):
-        serverName = getServerName(client)
+        serverName = ServerInfo.getServerName(client)
         table = [['Имя Сервера '], [serverName]]
-        return getHTMLTable(table)
+        return HtmlGen.getHTMLTable(table)
 
     def BaseProgrammInstalledHtml(client):
-        programInfo = getBaseProgramEnv(client)
+        programInfo = ServerInfo.getBaseProgramEnv(client)
         listHtml = []
 
         listHtml.append('<table>')
