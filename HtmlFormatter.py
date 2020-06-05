@@ -1,18 +1,9 @@
 from HtmlGen import HtmlGen
 from ServerInfo import ServerInfo
-import CommandLineInfo
 
 
-hosts = CommandLineInfo.getServerAddress()
-user = CommandLineInfo.getUserName()
-password = CommandLineInfo.getUserPassword()
-ports = CommandLineInfo.getServerPort()
-#client = ServerInfo.ServerInfo.getSShConnection(host, user, password, port)
-filepath = '/Users/daniilkutyrev/Desktop/test.html'
-
-
-def generateHtmlTableHeader():
-    file = open('/Users/daniilkutyrev/Desktop/test.html', 'w')
+def generateHtmlTableHeader(hosts,user,password,ports,filepath):
+    file = open(filepath, 'w')
     file.write('<table border="1">')
     file.write('<thead>')
     file.write('<tr>')
@@ -28,24 +19,24 @@ def generateHtmlTableHeader():
     file.write('</thead>')
     x = 0
     while(x<len(hosts)):
-        client = ServerInfo.getSShConnection(hosts[x], user, password, ports[x])
-        generateHTMLTableBody(file, client, hosts[x], ports[x])
+        client = getSShConnection(hosts[x], user, password, ports[x])
+        generateHTMLTableBody(file, client, hosts[x], ports[x], user, password)
         x = x + 1
     file.write('</table')
     file.close()
 
 
-def generateHTMLTableBody(file, client,host,port):
-    baseProgram = HtmlGen.BaseProgrammInstalledHtml(client)
-    hddInfo=HtmlGen.HDDInfoHtml(client)
+def generateHTMLTableBody(file, client, host, port, user, password):
+    baseProgram = BaseProgrammInstalledHtml(client)
+    hddInfo=HDDInfoHtml(client)
     file.write('<tbody>')
     file.write('<tr>')
-    file.write('<td>' + HtmlGen.ServerNameInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.ServerAddresseInfoHtml(client) + '</br>' + 'IP Адрес из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
+    file.write('<td>' + ServerNameInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + ServerAddresseInfoHtml(client) + '</br>' + 'SSH из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
     file.write('<td>' + 'SSH: User - ' + user + '</br>' + ' Password - ' + password + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + OsInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + CPUinfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + MemoryInfoHtml(client) + '</td>' + '\n')
     for x in baseProgram:
         file.write('<td>' + x + '</td>')
     for x in hddInfo:
@@ -53,7 +44,7 @@ def generateHTMLTableBody(file, client,host,port):
     file.write('</tr>')
     file.write('</tbody')
 
-generateHtmlTableHeader()
+
 
 
 

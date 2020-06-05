@@ -1,64 +1,54 @@
 import sys
 
-#param_listServerPathName = sys.argv[1]
-#param_listServerPathValue = sys.argv[2]
-#param_userName = sys.argv[3]
-#param_userValue = sys.argv[4]
-#param_userPassword = sys.argv[5]
-#param_userPasswordValue = sys.argv[6]
-#param_fileOutputName = sys.argv[7]
-#param_fileOutputValue = sys.argv[8]
+import HtmlFormatter
 
 
-def prepareServerList():
-    #if param_listServerPathName == '-h' or param_listServerPathName == '--hosts':
+def startProgram():
 
-        file = open('/Users/daniilkutyrev/Desktop/servers.txt', 'r')
+    if sys.argv[1] == '-h' or sys.argv[1] == '--hosts':
+        file = open(sys.argv[2], 'r')
         list_servers = []
         try:
             for line in file:
                 list_servers.append(line.replace('\n', ' '))
         finally:
             file.close()
-        list_ports = []
+        list_tmp = []
         for x in list_servers:
-            list_ports.append(x.split(':'))
-        return list_ports
+            list_tmp.append(x.split(':'))
 
-def getServerAddress():
-    listAddresse = []
-    for x in prepareServerList():
-        listAddresse.append(x[0])
-    return listAddresse
+        listAddresses = []
+        for x in list_tmp:
+            listAddresses.append(x[0])
 
-def getServerPort():
-    listPorts = []
-    for x in prepareServerList():
-        listPorts.append(int(x[1]))
-    return listPorts
+        listPorts = []
+        for x in list_tmp:
+            listPorts.append(int(x[1]))
+    else:
+        print('Не задан путь к фалу списка серверов')
+        sys.exit(1)
 
 
+    if sys.argv[3] == '-u' or sys.argv[3] == '--user':
+        user = sys.argv[4]
+    else:
+       print('Не задан параметр имени пользователя')
+       sys.exit(1)
 
-   # else:
-    #    print('не задан путь к фалу списка серверов')
-     #   sys.exit(1)
+    if sys.argv[5] == '-p' or sys.argv[5]== '--password':
+        password = sys.argv[6]
+    else:
+        print('Не задан параметр пароля пользователя')
+        sys.exit(1)
 
+    if sys.argv[7] == '-o' or sys.argv[7] == '--output':
+        outputFilePath = sys.argv[8]
+    else:
+        print('Не задан путь для файла вывода')
+        sys.exit(1)
 
-def getUserName():
-    #if param_userName == '-u' or param_userName == '--user':
-       # return param_userValue
-        return 'intertrust'
-    #else:
-    #    print('не задан параметр имени пользователя')
-    #   sys.exit(1)
+    HtmlFormatter.generateHtmlTableHeader(listAddresses, user, password, listPorts, outputFilePath)
 
-
-def getUserPassword():
-    #if param_userPassword == '-p' or param_userPassword == '--password':
-       # return param_userPasswordValue
-        return '39CgjVfkHtf<ea'
-    #else:
-    #    print('не задан параметр пароля пользователя')
-    #    sys.exit(1)
+startProgram()
 
 
