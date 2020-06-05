@@ -42,14 +42,26 @@ class ServerInfo():
         return str(mem)
 
     def getOsCoreInfo(client):
-        RawLinuxCoreVersion = str(ServerInfo.ExecCommandOnRemoteServer(client, 'awk \'{print $1,$2,$3}\' /proc/version'))
-        LinuxCoreVersion = ''.join(i for i in RawLinuxCoreVersion if not i in ServerInfo.bad_chars)
-        return str(LinuxCoreVersion)
+        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/linux_Core.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'awk \'{print $1,$2,$3}\' /proc/version > /home/intertrust/linux_Core.txt')
+        #LinuxCoreVersion = ''.join(i for i in RawLinuxCoreVersion if not i in ServerInfo.bad_chars)
+        RawLinuxCoreVerion = ServerInfo.readRemoteFile(client, '/home/intertrust/linux_Core.txt')
+        LinuxCoreVersion = []
+        for x in RawLinuxCoreVerion:
+            LinuxCoreVersion.append(x)
+        ServerInfo.ExecCommandOnRemoteServer(client, 'rm -f /home/intertrust/linux_Core.txt')
+        return str(LinuxCoreVersion[0])
 
     def getOsInfo(client):
-        RawOSVersion = str(ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release'))
-        OsVersion = ''.join(i for i in RawOSVersion if not i in ServerInfo.bad_chars)
-        return str(OsVersion)
+        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/сentos.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release > /home/intertrust/сentos.txt')
+        RawOSVersion = ServerInfo.readRemoteFile(client, '/home/intertrust/сentos.txt')
+        OsVersion = []
+
+        for x in RawOSVersion:
+            OsVersion.append(x)
+        ServerInfo.ExecCommandOnRemoteServer(client, 'rm -f /home/intertrust/сentos.txt')
+        return str(OsVersion[0])
 
     def getFsTabInfo(client):
        remote_file = client.open('/etc/fstab')
