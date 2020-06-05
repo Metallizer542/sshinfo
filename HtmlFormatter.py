@@ -1,12 +1,13 @@
 from HtmlGen import HtmlGen
-import ServerInfo
-from string import ascii_letters, whitespace
+from ServerInfo import ServerInfo
+import CommandLineInfo
 
-host = '169.254.10.67'
-user = 'intertrust'
-password = '39CgjVfkHtf<ea'
-port = 3322
-client = ServerInfo.ServerInfo.getSShConnection(host, user, password, port)
+
+hosts = CommandLineInfo.getServerAddress()
+user = CommandLineInfo.getUserName()
+password = CommandLineInfo.getUserPassword()
+ports = CommandLineInfo.getServerPort()
+#client = ServerInfo.ServerInfo.getSShConnection(host, user, password, port)
 filepath = '/Users/daniilkutyrev/Desktop/test.html'
 
 
@@ -25,19 +26,23 @@ def generateHtmlTableHeader():
     file.write('<th> HDD </th>')
     file.write('</tr>')
     file.write('</thead>')
-    generateHTMLTableBody(file, client)
+    x = 0
+    while(x<len(hosts)):
+        client = ServerInfo.getSShConnection(hosts[x], user, password, ports[x])
+        generateHTMLTableBody(file, client, hosts[x], ports[x])
+        x = x + 1
     file.write('</table')
     file.close()
 
 
-def generateHTMLTableBody(file, client):
+def generateHTMLTableBody(file, client,host,port):
     baseProgram = HtmlGen.BaseProgrammInstalledHtml(client)
     hddInfo=HtmlGen.HDDInfoHtml(client)
     file.write('<tbody>')
     file.write('<tr>')
     file.write('<td>' + HtmlGen.ServerNameInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.ServerAddresseInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + 'SSH: User - ' + user + 'Password - ' + password + '</td>' + '\n')
+    file.write('<td>' + HtmlGen.ServerAddresseInfoHtml(client) + '</br>' + 'IP Адрес из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
+    file.write('<td>' + 'SSH: User - ' + user + '</br>' + ' Password - ' + password + '</td>' + '\n')
     file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
@@ -49,8 +54,6 @@ def generateHTMLTableBody(file, client):
     file.write('</tbody')
 
 generateHtmlTableHeader()
-
-
 
 
 

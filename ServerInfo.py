@@ -5,11 +5,16 @@ class ServerInfo():
 
     bad_chars = ['\n', '\'', '[', ']']
 
+
     def getSShConnection(host, user, password, port):
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         client.connect(host, port, user, password)
         return client
+
+    def getHomeDirectory(client):
+        homedirectory = ServerInfo.ExecCommandOnRemoteServer(client, 'pwd')
+        return str(homedirectory[0].replace('\n', ''))
 
     def ExecCommandOnRemoteServer(client, command):
         stdin, stdout, stderr = client.exec_command(command)
@@ -42,25 +47,24 @@ class ServerInfo():
         return str(mem)
 
     def getOsCoreInfo(client):
-        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/linux_Core.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'awk \'{print $1,$2,$3}\' /proc/version > /home/intertrust/linux_Core.txt')
-        #LinuxCoreVersion = ''.join(i for i in RawLinuxCoreVersion if not i in ServerInfo.bad_chars)
-        RawLinuxCoreVerion = ServerInfo.readRemoteFile(client, '/home/intertrust/linux_Core.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' touch ' + ServerInfo.getHomeDirectory(client) + '/linux_Core.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'awk \'{print $1,$2,$3}\' /proc/version >' + ServerInfo.getHomeDirectory(client) +'/linux_Core.txt')
+        RawLinuxCoreVerion = ServerInfo.readRemoteFile(client, ServerInfo.getHomeDirectory(client) +'/linux_Core.txt')
         LinuxCoreVersion = []
         for x in RawLinuxCoreVerion:
             LinuxCoreVersion.append(x)
-        ServerInfo.ExecCommandOnRemoteServer(client, 'rm -f /home/intertrust/linux_Core.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' rm -f '+ ServerInfo.getHomeDirectory(client) +'/linux_Core.txt')
         return str(LinuxCoreVersion[0])
 
     def getOsInfo(client):
-        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/сentos.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release > /home/intertrust/сentos.txt')
-        RawOSVersion = ServerInfo.readRemoteFile(client, '/home/intertrust/сentos.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' touch '+ ServerInfo.getHomeDirectory(client) +'/сentos.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'cat /etc/centos-release > '+ ServerInfo.getHomeDirectory(client) +'/сentos.txt')
+        RawOSVersion = ServerInfo.readRemoteFile(client, ServerInfo.getHomeDirectory(client) +'/сentos.txt')
         OsVersion = []
 
         for x in RawOSVersion:
             OsVersion.append(x)
-        ServerInfo.ExecCommandOnRemoteServer(client, 'rm -f /home/intertrust/сentos.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' rm -f '+ ServerInfo.getHomeDirectory(client) +'/сentos.txt')
         return str(OsVersion[0])
 
     def getFsTabInfo(client):
@@ -92,20 +96,20 @@ class ServerInfo():
         return serverName
 
     def getIpAddress(client):
-        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/ip.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo ip -4 addr | grep "inet" | awk {\'print $2\'} | tee /home/intertrust/ip.txt')
-        RawIpInfo = (ServerInfo.ExecCommandOnRemoteServer(client, 'cat /home/intertrust/ip.txt'))
-        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f /home/intertrust/ip.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'touch + ' + ServerInfo.getHomeDirectory(client) +'/ip.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo ip -4 addr | grep "inet" | awk {\'print $2\'} >' + ServerInfo.getHomeDirectory(client) + '/ip.txt')
+        RawIpInfo = (ServerInfo.ExecCommandOnRemoteServer(client, 'cat /' + ServerInfo.getHomeDirectory(client) +'/ip.txt'))
+        ServerInfo.ExecCommandOnRemoteServer(client, ' rm -f '+ ServerInfo.getHomeDirectory(client) +'/ip.txt')
         return RawIpInfo[1]
 
     def getBaseProgramEnv(client):
 
         BaseProgramEnv = ['wildfly', 'tomcat', 'postgresql', 'logstash', 'zabbix', 'kibana', 'artemis', 'solr', 'haproxy', 'nginx', 'elasticsearch']
-        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/java_version.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'touch /home/intertrust/installed_services.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'ls /etc/systemd/system  >> /home/intertrust/installed_services.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'ls /usr/lib/systemd/system >> /home/intertrust/installed_services.txt')
-        tempInfo = ServerInfo.readRemoteFile(client, '/home/intertrust/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' touch '+ ServerInfo.getHomeDirectory(client) +'/java_version.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' touch '+ ServerInfo.getHomeDirectory(client) +'/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'ls /etc/systemd/system  > '+ ServerInfo.getHomeDirectory(client) +'/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, 'ls /usr/lib/systemd/system >' + ServerInfo.getHomeDirectory(client) +'/installed_services.txt')
+        tempInfo = ServerInfo.readRemoteFile(client, ServerInfo.getHomeDirectory(client) +'/installed_services.txt')
         BaseProgramInstalledServices = []
 
         for x in tempInfo:
@@ -113,11 +117,10 @@ class ServerInfo():
                 if x.__contains__(y):
                     BaseProgramInstalledServices.append(str(x.replace('.service', '')))
 
-        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo java -version 2>/home/intertrust/java_version.txt')
-        javatmp = ServerInfo.readRemoteFile(client, '/home/intertrust/java_version.txt')
-        BaseProgramInstalledServices.append(javatmp[0])
-        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f /home/intertrust/installed_services.txt')
-        ServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f /home/intertrust/java_version.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' java -version 2>'+ ServerInfo.getHomeDirectory(client) +'/java_version.txt')
+       # javatmp = ServerInfo.readRemoteFile(client, + ServerInfo.getHomeDirectory(client) +'/java_version.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' rm -f '+ ServerInfo.getHomeDirectory(client) +'/installed_services.txt')
+        ServerInfo.ExecCommandOnRemoteServer(client, ' rm -f '+ ServerInfo.getHomeDirectory(client) +'/java_version.txt')
 
         return BaseProgramInstalledServices
 
