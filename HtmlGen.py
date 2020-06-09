@@ -44,25 +44,25 @@ class HtmlGen():
             x = x + 1
 
         list2.append('<table>')
-        list2.append('<tbody>')
+        list2.append('  <tbody>')
 
-        list2.append('<tr>')
-        list2.append('<td> <b> Файловая система </b> </th>')
-        list2.append('<td> <b> Размер </b> </th>')
+        list2.append('      <tr>')
+        list2.append('          <th> <b> Файловая система </b> </th>')
+        list2.append('          <th> <b> Размер </b> </th>')
 
-        list2.append('</tr>')
+        list2.append('      </tr>')
 
 
         x = 1
         while x < len(list):
-            list2.append('<tr>')
-            list2.append('<td>' + hddSourceInfo[x] + '</td>' + '\n')
-            list2.append('<td>' + hddSizeInfo[x] + '</td>' + '\n')
-            list2.append('</tr>')
+            list2.append('      <tr>')
+            list2.append('          <td>' + hddSourceInfo[x] + '</td>' + '\n')
+            list2.append('          <td>' + hddSizeInfo[x] + '</td>' + '\n')
+            list2.append('      </tr>')
             if x == len(list) - 2:
                 break
             x = x + 1
-        list2.append('</tbody>')
+        list2.append('  </tbody>')
         list2.append('</table>')
         return list2
 

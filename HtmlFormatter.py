@@ -37,12 +37,16 @@ def generateHTMLTableBody(file, client, host, port, user, password):
     file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
     file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
-    for x in baseProgram:
-        file.write('<td>' + x + '</td>')
-    for x in hddInfo:
-        file.write('<td>' + x + '</td>')
+    for programm in baseProgram:
+        file.write('<td>')
+        file.write(programm)
+        file.write('</td>')
+    for hdd in hddInfo:
+        file.write('<td>')
+        file.write(hdd)
+        file.write('</td>')
     file.write('</tr>')
-    file.write('</tbody')
+    file.write('</tbody>')
 
 
 
