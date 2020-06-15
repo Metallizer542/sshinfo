@@ -1,8 +1,8 @@
-from ServerInfo import ServerInfo
+from GetServerInfo import GetServerInfo
 from tabulate import tabulate
 
 
-class HtmlGen():
+class HtmlTables():
 
     def getHTMLTable(table):
         tableForm = (tabulate(table, tablefmt='html'))
@@ -10,32 +10,32 @@ class HtmlGen():
 
     def fstabInfoHtml(client):
         sftp_client = client.open_sftp()
-        fstab = ServerInfo.getFsTabInfo(sftp_client)
-        return HtmlGen.getHTMLTable(fstab)
+        fstab = GetServerInfo.getFsTabInfo(sftp_client)
+        return HtmlTables.getHTMLTable(fstab)
 
     def CPUinfoHtml(client):
-        freq = str(ServerInfo.getCpuFreqInfo(client))
-        cores = str(ServerInfo.getCpuCoresInfo(client))
+        freq = str(GetServerInfo.getCpuFreqInfo(client))
+        cores = str(GetServerInfo.getCpuCoresInfo(client))
         table = [['CPU frequency', 'CPU cores'], [freq + " GHZ", cores]]
-        return HtmlGen.getHTMLTable(table)
+        return HtmlTables.getHTMLTable(table)
 
     def MemoryInfoHtml(client):
-        mem = str(ServerInfo.getMemInfo(client))
+        mem = str(GetServerInfo.getMemInfo(client))
         table = [['Memory size'], [mem + " GB", ]]
-        return HtmlGen.getHTMLTable(table)
+        return HtmlTables.getHTMLTable(table)
 
 
     def OsInfoHtml(client):
-        osLinuxCore = ServerInfo.getOsCoreInfo(client)
-        osVersion = ServerInfo.getOsInfo(client)
+        osLinuxCore = GetServerInfo.getOsCoreInfo(client)
+        osVersion = GetServerInfo.getOsInfo(client)
         table = [['ОС', 'Версия ядра Linux'], [osVersion, osLinuxCore]]
-        return HtmlGen.getHTMLTable(table)
+        return HtmlTables.getHTMLTable(table)
 
 
     def HDDInfoHtml(client):
 
-        hddSizeInfo = ServerInfo.dfDiskSizeInfo(client)
-        hddSourceInfo =ServerInfo. dfDiskFileSystemInfo(client)
+        hddSizeInfo = GetServerInfo.getDiskSizeInfo(client)
+        hddSourceInfo =GetServerInfo.getDiskFileSystemInfo(client)
         list = []
         list2 = []
         x = 0
@@ -44,42 +44,42 @@ class HtmlGen():
             x = x + 1
 
         list2.append('<table>')
-        list2.append('  <tbody>')
+        list2.append('<tbody>')
 
-        list2.append('      <tr>')
-        list2.append('          <th> <b> Файловая система </b> </th>')
-        list2.append('          <th> <b> Размер </b> </th>')
+        list2.append('<tr>')
+        list2.append('<th> <b> Файловая система </b> </th>')
+        list2.append('<th> <b> Размер </b> </th>')
 
-        list2.append('      </tr>')
+        list2.append('</tr>')
 
 
         x = 1
         while x < len(list):
-            list2.append('      <tr>')
-            list2.append('          <td>' + hddSourceInfo[x] + '</td>' + '\n')
-            list2.append('          <td>' + hddSizeInfo[x] + '</td>' + '\n')
-            list2.append('      </tr>')
+            list2.append('<tr>')
+            list2.append('<td>' + hddSourceInfo[x] + '</td>' + '\n')
+            list2.append('<td>' + hddSizeInfo[x] + '</td>' + '\n')
+            list2.append('</tr>')
             if x == len(list) - 2:
                 break
             x = x + 1
-        list2.append('  </tbody>')
+        list2.append('</tbody>')
         list2.append('</table>')
         return list2
 
 
     def ServerAddresseInfoHtml(client):
-        ip = ServerInfo.getIpAddress(client)
+        ip = GetServerInfo.getIpAddress(client)
         table = [['Внутренний IP адрес '], [ip]]
-        return HtmlGen.getHTMLTable(table)
+        return HtmlTables.getHTMLTable(table)
 
 
     def ServerNameInfoHtml(client):
-        serverName = ServerInfo.getServerName(client)
+        serverName = GetServerInfo.getServerName(client)
         table = [['Имя Сервера '], [serverName]]
-        return HtmlGen.getHTMLTable(table)
+        return HtmlTables.getHTMLTable(table)
 
     def BaseProgrammInstalledHtml(client):
-        programInfo = ServerInfo.getBaseProgramEnv(client)
+        programInfo = GetServerInfo.getBaseProgramEnv(client)
         listHtml = []
 
         listHtml.append('<table>')

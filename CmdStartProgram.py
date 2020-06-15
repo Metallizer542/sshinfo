@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import HtmlFormatter
+import GenerateGeneralHtmlFile
 
 def startProgram():
 
@@ -48,7 +48,7 @@ def startProgram():
         print('Не задан путь для файла вывода')
         sys.exit(1)
 
-    HtmlFormatter.generateHtmlTableHeader(listAddresses, user, password, listPorts, outputFilePath)
+    GenerateGeneralHtmlFile.generateHtmlTableHeader(listAddresses, user, password, listPorts, outputFilePath)
 
 startProgram()
 

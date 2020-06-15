@@ -1,5 +1,5 @@
-from HtmlGen import HtmlGen
-from ServerInfo import ServerInfo
+from HtmlTables import HtmlTables
+from GetServerInfo import GetServerInfo
 
 
 def generateHtmlTableHeader(hosts,user,password,ports,filepath):
@@ -19,7 +19,7 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
     file.write('</thead>')
     x = 0
     while(x<len(hosts)):
-        client = ServerInfo.getSShConnection(hosts[x], user, password, ports[x])
+        client = GetServerInfo.getSShConnection(hosts[x], user, password, ports[x])
         generateHTMLTableBody(file, client, hosts[x], ports[x], user, password)
         x = x + 1
     file.write('</table')
@@ -27,16 +27,16 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
 
 
 def generateHTMLTableBody(file, client, host, port, user, password):
-    baseProgram = HtmlGen.BaseProgrammInstalledHtml(client)
-    hddInfo=HtmlGen.HDDInfoHtml(client)
+    baseProgram = HtmlTables.BaseProgrammInstalledHtml(client)
+    hddInfo=HtmlTables.HDDInfoHtml(client)
     file.write('<tbody>')
     file.write('<tr>')
-    file.write('<td>' + HtmlGen.ServerNameInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.ServerAddresseInfoHtml(client) + '</br>' + 'SSH из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
+    file.write('<td>' + HtmlTables.ServerNameInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlTables.ServerAddresseInfoHtml(client) + '</br>' + 'SSH из сети Интертраст </br>' + host + ':' + str(port) + '</td>' + '\n')
     file.write('<td>' + 'SSH: User - ' + user + '</br>' + ' Password - ' + password + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.OsInfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.CPUinfoHtml(client) + '</td>' + '\n')
-    file.write('<td>' + HtmlGen.MemoryInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlTables.OsInfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlTables.CPUinfoHtml(client) + '</td>' + '\n')
+    file.write('<td>' + HtmlTables.MemoryInfoHtml(client) + '</td>' + '\n')
     for programm in baseProgram:
         file.write('<td>')
         file.write(programm)
