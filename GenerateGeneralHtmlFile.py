@@ -1,8 +1,13 @@
 from HtmlTables import HtmlTables
 from GetServerInfo import GetServerInfo
+import time
 
 
 def generateHtmlTableHeader(hosts,user,password,ports,filepath):
+
+    l = len(hosts)
+    printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
+
     file = open(filepath, 'w')
     file.write('<table border="1">')
     file.write('<thead>')
@@ -20,7 +25,9 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
     x = 0
     while(x<len(hosts)):
         client = GetServerInfo.getSShConnection(hosts[x], user, password, ports[x])
+        time.sleep(0.1)
         generateHTMLTableBody(file, client, hosts[x], ports[x], user, password)
+        printProgressBar(x + 1, l, prefix='Progress:', suffix='Complete', length=50)
         x = x + 1
     file.write('</table')
     file.close()
@@ -47,6 +54,14 @@ def generateHTMLTableBody(file, client, host, port, user, password):
         file.write('</td>')
     file.write('</tr>')
     file.write('</tbody>')
+
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end=printEnd)
+    if iteration == total:
+        print()
 
 
 
