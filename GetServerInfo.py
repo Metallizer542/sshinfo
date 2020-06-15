@@ -122,10 +122,11 @@ class GetServerInfo():
                     BaseProgramInstalledServices.append(str1)
 
 
-        GetServerInfo.ExecCommandOnRemoteServer(client, ' java -version 2>' + GetServerInfo.homedirectory + '/java_version.txt')
-       # javatmp = readRemoteFile(client, + homedirectory +'/java_version.txt')
-       # ServerInfo.ExecCommandOnRemoteServer(client, ' rm -f '+ ServerInfo.homedirectory +'/installed_services.txt')
-        GetServerInfo.ExecCommandOnRemoteServer(client, ' rm -f ' + GetServerInfo.homedirectory + '/java_version.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo java -version 2>' + GetServerInfo.homedirectory + '/java_version.txt')
+        javatmp = GetServerInfo.readRemoteFile(client, GetServerInfo.homedirectory +'/java_version.txt')
+        BaseProgramInstalledServices.append(javatmp[0])
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f '+ GetServerInfo.homedirectory +' /installed_services.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f ' + GetServerInfo.homedirectory + '/java_version.txt')
 
         return BaseProgramInstalledServices
 
