@@ -97,7 +97,7 @@ class GetServerInfo():
         return serverName
 
     def getIpAddress(client):
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'ip -4 addr | grep "inet" | awk {\'print $2\'} >' + GetServerInfo.homedirectory + '/ip.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo ip -4 addr | grep "inet" | awk {\'print $2\'} >' + GetServerInfo.homedirectory + '/ip.txt')
         RawIpInfo = (GetServerInfo.ExecCommandOnRemoteServer(client, 'cat /' + GetServerInfo.homedirectory + '/ip.txt'))
         GetServerInfo.ExecCommandOnRemoteServer(client, ' rm -f ' + GetServerInfo.homedirectory + '/ip.txt')
         return RawIpInfo[1]
@@ -107,15 +107,19 @@ class GetServerInfo():
         BaseProgramEnv = ['wildfly', 'tomcat', 'postgresql', 'logstash', 'zabbix', 'kibana', 'artemis', 'solr', 'haproxy', 'nginx', 'elasticsearch']
         GetServerInfo.ExecCommandOnRemoteServer(client, ' touch ' + GetServerInfo.homedirectory + '/java_version.txt')
         GetServerInfo.ExecCommandOnRemoteServer(client, ' touch ' + GetServerInfo.homedirectory + '/installed_services.txt')
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'ls /etc/systemd/system >' + GetServerInfo.homedirectory + '/installed_services.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'ls /etc/systemd/system > ' + GetServerInfo.homedirectory + '/installed_services.txt')
         GetServerInfo.ExecCommandOnRemoteServer(client, 'ls /usr/lib/systemd/system >>' + GetServerInfo.homedirectory +'/installed_services.txt')
         tempInfo = GetServerInfo.readRemoteFile(client, GetServerInfo.homedirectory + '/installed_services.txt')
         BaseProgramInstalledServices = []
 
-        for x in tempInfo:
-            for y in BaseProgramEnv:
-                if x.__contains__(y):
-                    BaseProgramInstalledServices.append(x)
+
+        for service in tempInfo:
+            str1 = str(service)
+
+            for base_program in BaseProgramEnv:
+                str2 = str(base_program)
+                if str1.__contains__(str2):
+                    BaseProgramInstalledServices.append(str1)
 
 
         GetServerInfo.ExecCommandOnRemoteServer(client, ' java -version 2>' + GetServerInfo.homedirectory + '/java_version.txt')

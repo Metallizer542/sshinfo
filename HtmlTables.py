@@ -36,35 +36,34 @@ class HtmlTables():
 
         hddSizeInfo = GetServerInfo.getDiskSizeInfo(client)
         hddSourceInfo =GetServerInfo.getDiskFileSystemInfo(client)
-        list = []
-        list2 = []
+        listTmpInfo = []
+        list2HddInfo = []
+
         x = 0
         while x < len(hddSizeInfo):
-            list.append(hddSourceInfo[x] + hddSizeInfo[x])
+            listTmpInfo.append(hddSourceInfo[x] + hddSizeInfo[x])
             x = x + 1
 
-        list2.append('<table>')
-        list2.append('<tbody>')
-
-        list2.append('<tr>')
-        list2.append('<th> <b> Файловая система </b> </th>')
-        list2.append('<th> <b> Размер </b> </th>')
-
-        list2.append('</tr>')
-
+        list2HddInfo.append('<table>')
+        list2HddInfo.append('<tbody>')
+        list2HddInfo.append('<tr>')
+        list2HddInfo.append('<th> <b> Файловая система </b> </th>')
+        list2HddInfo.append('<th> <b> Размер </b> </th>')
+        list2HddInfo.append('</tr>')
 
         x = 1
-        while x < len(list):
-            list2.append('<tr>')
-            list2.append('<td>' + hddSourceInfo[x] + '</td>' + '\n')
-            list2.append('<td>' + hddSizeInfo[x] + '</td>' + '\n')
-            list2.append('</tr>')
-            if x == len(list) - 2:
+        while x < len(listTmpInfo):
+            list2HddInfo.append('<tr>')
+            list2HddInfo.append('<td>' + hddSourceInfo[x] + '</td>' + '\n')
+            list2HddInfo.append('<td>' + hddSizeInfo[x] + '</td>' + '\n')
+            list2HddInfo.append('</tr>')
+            if x == len(listTmpInfo) - 2:
                 break
             x = x + 1
-        list2.append('</tbody>')
-        list2.append('</table>')
-        return list2
+
+        list2HddInfo.append('</tbody>')
+        list2HddInfo.append('</table>')
+        return list2HddInfo
 
 
     def ServerAddresseInfoHtml(client):
@@ -79,22 +78,20 @@ class HtmlTables():
         return HtmlTables.getHTMLTable(table)
 
     def BaseProgrammInstalledHtml(client):
-        programInfo = GetServerInfo.getBaseProgramEnv(client)
-        listHtml = []
+        programList = GetServerInfo.getBaseProgramEnv(client)
 
-        listHtml.append('<table>')
-        listHtml.append('<tbody>')
-        x = 1
-        while x < len(programInfo):
-            listHtml.append('<tr>')
-            listHtml.append('<td>' + programInfo[x] + '</td>' + '\n')
-            listHtml.append('</tr>')
-            if x == len(programInfo) - 2:
-                break
-            x = x + 1
-        listHtml.append('</tbody>')
-        listHtml.append('</table>')
-        return listHtml
+        ProgramListHtml = []
+        ProgramListHtml.append('<table>')
+        ProgramListHtml.append('<tbody>')
+
+        for x in programList:
+            ProgramListHtml.append('<tr>')
+            ProgramListHtml.append('<td>' + x.replace('.service', '') + '</td>' + '\n')
+            ProgramListHtml.append('</tr>')
+
+        ProgramListHtml.append('</tbody>')
+        ProgramListHtml.append('</table>')
+        return ProgramListHtml
 
 
 
