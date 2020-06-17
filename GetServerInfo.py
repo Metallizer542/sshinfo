@@ -32,7 +32,7 @@ class GetServerInfo():
         return str(freq)
 
     def getCpuCoresInfo(client):
-        data = set(GetServerInfo.ExecCommandOnRemoteServer(client, 'cat /proc/cpuinfo |grep cores'))
+        data = set(GetServerInfo.ExecCommandOnRemoteServer(client, 'lscpu |grep \'CPU(s):\' |awk {\'print$2\'} |head -n1'))
         CpuTempCoresList = []
         for x in data:
             CpuTempCoresList.append(x)
