@@ -97,9 +97,9 @@ class GetServerInfo():
         return serverName
 
     def getIpAddress(client):
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo ip -4 addr | grep "inet" | awk {\'print $2\'} >' + GetServerInfo.homedirectory + '/ip.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'ip -4 addr | grep "inet" | awk {\'print $2\'} >' + GetServerInfo.homedirectory + '/ip.txt')
         RawIpInfo = (GetServerInfo.ExecCommandOnRemoteServer(client, 'cat /' + GetServerInfo.homedirectory + '/ip.txt'))
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f ' + GetServerInfo.homedirectory + '/ip.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory + '/ip.txt')
         return RawIpInfo[1]
 
     def getBaseProgramEnv(client):
@@ -122,11 +122,11 @@ class GetServerInfo():
                     BaseProgramInstalledServices.append(str1)
 
 
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo java -version 2>' + GetServerInfo.homedirectory + '/java_version.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'java -version 2>' + GetServerInfo.homedirectory + '/java_version.txt')
         javatmp = GetServerInfo.readRemoteFile(client, GetServerInfo.homedirectory +'/java_version.txt')
         BaseProgramInstalledServices.append(javatmp[0])
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f ' + GetServerInfo.homedirectory +' /installed_services.txt')
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'sudo rm -f ' + GetServerInfo.homedirectory + '/java_version.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory +' /installed_services.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory + '/java_version.txt')
 
         return BaseProgramInstalledServices
 
