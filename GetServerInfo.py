@@ -97,7 +97,7 @@ class GetServerInfo():
         return serverName
 
     def getIpAddress(client):
-        GetServerInfo.ExecCommandOnRemoteServer(client, 'ip -4 addr | grep "inet" | awk {\'print $2\'} > $(pwd)/ip.txt')
+        GetServerInfo.ExecCommandOnRemoteServer(client, '/usr/sbin/ip -4 addr | grep "inet" | awk {\'print $2\'} > $(pwd)/ip.txt')
         RawIpInfo = (GetServerInfo.ExecCommandOnRemoteServer(client, 'cat /' + GetServerInfo.homedirectory + '/ip.txt'))
         GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory + '/ip.txt')
         return RawIpInfo[1]
