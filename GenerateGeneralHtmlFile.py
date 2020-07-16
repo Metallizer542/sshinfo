@@ -26,11 +26,10 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
     x = 0
     while(x<len(hosts)):
         client = GetServerInfo.getSShConnection(hosts[x], user, password, ports[x])
-        print('идет подключение к серверу' + hosts[x]+':'+ports[x])
         time.sleep(0.1)
         generateHTMLTableBody(file, client, hosts[x], ports[x], user, password)
         printProgressBar(x + 1, l, prefix='Progress:', suffix='Complete', length=50)
-        print('сбор информации с сервера ' + hosts[x] + ':' + ports[x] + 'завершен')
+        print('сбор информации с сервера ' + str(hosts[x]) + ':' + str(ports[x]) + ' завершен')
         x = x + 1
     file.write('</table')
     file.close()
@@ -62,7 +61,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end=printEnd)
+    print('\r%s |%s| %s%% %s\n' % (prefix, bar, percent, suffix), end=printEnd)
     if iteration == total:
         print()
 

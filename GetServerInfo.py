@@ -10,7 +10,7 @@ class GetServerInfo():
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         client.connect(host, port, user, password)
-        print('установлено соединение с сервером ' + host + ':' + port)
+        print('установлено соединение с сервером ' + str(host) + ':' + str(port))
         GetServerInfo.getHomeDirectory(client)
         return client
 
