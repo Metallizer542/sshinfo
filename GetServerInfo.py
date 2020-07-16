@@ -1,5 +1,5 @@
 import paramiko
-
+import logging
 class GetServerInfo():
 
     bad_chars = ['\n', '\'', '[', ']']
@@ -10,6 +10,7 @@ class GetServerInfo():
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         client.connect(host, port, user, password)
+        print('установлено соединение с сервером ' + host + ':' + port)
         GetServerInfo.getHomeDirectory(client)
         return client
 
@@ -29,6 +30,7 @@ class GetServerInfo():
         CpuMhzTemp = filter(str.isdigit, str(cpuTempList[0]))
         CpuMhz = int("".join(CpuMhzTemp))
         freq = round(CpuMhz/1000000, 1)
+        print('получена информация о частоте cpu')
         return str(freq)
 
     def getCpuCoresInfo(client):
@@ -38,6 +40,7 @@ class GetServerInfo():
             CpuTempCoresList.append(x)
         CpuTempCores = filter(str.isdigit, str(CpuTempCoresList[0]))
         CpuCores = int("".join(CpuTempCores))
+        print('получена информация о количестве ядер cpu')
         return str(CpuCores)
 
     def getMemInfo(client):
@@ -45,6 +48,7 @@ class GetServerInfo():
         tempData = filter(str.isdigit, memTotalTemp)
         memTotal = int("".join(tempData))
         mem = round(memTotal/1000000, 1)
+        print('получена информация об объеме ОЗУ')
         return str(mem)
 
     def getOsCoreInfo(client):
@@ -55,6 +59,7 @@ class GetServerInfo():
         for x in RawLinuxCoreVerion:
             LinuxCoreVersion.append(x)
         GetServerInfo.ExecCommandOnRemoteServer(client, ' rm -f ' + GetServerInfo.homedirectory + '/linux_Core.txt')
+        print('получена информация о ядре Linux')
         return str(LinuxCoreVersion[0])
 
     def getOsInfo(client):
@@ -66,6 +71,7 @@ class GetServerInfo():
         for x in RawOSVersion:
             OsVersion.append(x)
         GetServerInfo.ExecCommandOnRemoteServer(client, ' rm -f ' + GetServerInfo.homedirectory + '/сentos.txt')
+        print('получена информация о версии системы')
         return str(OsVersion[0])
 
     def getFsTabInfo(client):
@@ -83,23 +89,29 @@ class GetServerInfo():
         RawFdiskInfoSize = GetServerInfo.ExecCommandOnRemoteServer(client, 'df -h --output=size')
         dfdiskInfoSize = ''.join(i for i in RawFdiskInfoSize if not i in GetServerInfo.bad_chars)
         list = dfdiskInfoSize.split("\n")
+        print("получена информация об объеме hdd")
         return list
 
     def getDiskFileSystemInfo(client):
         RawFdiskInfoFileSystem = (GetServerInfo.ExecCommandOnRemoteServer(client, 'df -h --output=source'))
         dfdiskInfoFileSystem = ''.join(i for i in RawFdiskInfoFileSystem if not i in GetServerInfo.bad_chars)
         list = dfdiskInfoFileSystem.split("\n")
+        print("получена информация об файловых системах hdd")
         return list
 
     def getServerName(client):
         RawServerName =GetServerInfo.ExecCommandOnRemoteServer(client, 'cat /proc/sys/kernel/hostname')
         serverName = ''.join(i for i in RawServerName if not i in GetServerInfo.bad_chars)
+        print('получена информация об имени сервера')
         return serverName
 
     def getIpAddress(client):
         GetServerInfo.ExecCommandOnRemoteServer(client, '/usr/sbin/ip -4 addr | grep "inet" | awk {\'print $2\'} > $(pwd)/ip.txt')
         RawIpInfo = (GetServerInfo.ExecCommandOnRemoteServer(client, 'cat /' + GetServerInfo.homedirectory + '/ip.txt'))
         GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory + '/ip.txt')
+        if(len(RawIpInfo)<1):
+            print('возникли проблемы при получении ip адреса')
+        print('получена информация об IP адресе ')
         return RawIpInfo[1]
 
     def getBaseProgramEnv(client):
@@ -127,7 +139,7 @@ class GetServerInfo():
         BaseProgramInstalledServices.append(javatmp[0])
         GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory +' /installed_services.txt')
         GetServerInfo.ExecCommandOnRemoteServer(client, 'rm -f ' + GetServerInfo.homedirectory + '/java_version.txt')
-
+        print('получена информация об установленых сервисах')
         return BaseProgramInstalledServices
 
     def readRemoteFile(client, filepath):

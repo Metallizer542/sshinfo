@@ -5,6 +5,7 @@ import time
 
 def generateHtmlTableHeader(hosts,user,password,ports,filepath):
 
+
     l = len(hosts)
     printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
 
@@ -25,9 +26,11 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
     x = 0
     while(x<len(hosts)):
         client = GetServerInfo.getSShConnection(hosts[x], user, password, ports[x])
+        print('идет подключение к серверу' + hosts[x]+':'+ports[x])
         time.sleep(0.1)
         generateHTMLTableBody(file, client, hosts[x], ports[x], user, password)
         printProgressBar(x + 1, l, prefix='Progress:', suffix='Complete', length=50)
+        print('сбор информации с сервера ' + hosts[x] + ':' + ports[x] + 'завершен')
         x = x + 1
     file.write('</table')
     file.close()

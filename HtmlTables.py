@@ -1,6 +1,6 @@
 from GetServerInfo import GetServerInfo
 from tabulate import tabulate
-
+import logging
 
 class HtmlTables():
 
@@ -17,11 +17,13 @@ class HtmlTables():
         freq = str(GetServerInfo.getCpuFreqInfo(client))
         cores = str(GetServerInfo.getCpuCoresInfo(client))
         table = [['CPU frequency', 'CPU cores'], [freq + " GHZ", cores]]
+        print('сгенерирована таблица с информацией об CPU')
         return HtmlTables.getHTMLTable(table)
 
     def MemoryInfoHtml(client):
         mem = str(GetServerInfo.getMemInfo(client))
         table = [['Memory size'], [mem + " GB", ]]
+        print('сгенерирована таблица с информацией об ОЗУ')
         return HtmlTables.getHTMLTable(table)
 
 
@@ -29,6 +31,7 @@ class HtmlTables():
         osLinuxCore = GetServerInfo.getOsCoreInfo(client)
         osVersion = GetServerInfo.getOsInfo(client)
         table = [['ОС', 'Версия ядра Linux'], [osVersion, osLinuxCore]]
+        print('сгенерирована таблица с информацией об ОС')
         return HtmlTables.getHTMLTable(table)
 
 
@@ -63,18 +66,21 @@ class HtmlTables():
 
         list2HddInfo.append('</tbody>')
         list2HddInfo.append('</table>')
+        print('сгенерирована таблица с информацией об HDD')
         return list2HddInfo
 
 
     def ServerAddresseInfoHtml(client):
         ip = GetServerInfo.getIpAddress(client)
         table = [['Внутренний IP адрес '], [ip]]
+        print('сгенерирована таблица с информацией об IP адресе сервера')
         return HtmlTables.getHTMLTable(table)
 
 
     def ServerNameInfoHtml(client):
         serverName = GetServerInfo.getServerName(client)
         table = [['Имя Сервера '], [serverName]]
+        print('сгенерирована таблица с информацией об имени сервера')
         return HtmlTables.getHTMLTable(table)
 
     def BaseProgrammInstalledHtml(client):
@@ -91,6 +97,7 @@ class HtmlTables():
 
         ProgramListHtml.append('</tbody>')
         ProgramListHtml.append('</table>')
+        print('сгенерирована таблица с информацией об установленных сервисах')
         return ProgramListHtml
 
 
