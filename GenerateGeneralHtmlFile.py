@@ -9,7 +9,7 @@ def generateHtmlTableHeader(hosts,user,password,ports,filepath):
     l = len(hosts)
     printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
 
-    file = open(filepath, 'w')
+    file = open(filepath, 'w+', errors="ignore")
     file.write('<table border="1">')
     file.write('<thead>')
     file.write('<tr>')
